@@ -24,20 +24,20 @@ class AdminBackend:
     
     def authenticate_admin(self, username: str, password: str) -> bool:
         """Autentikasi admin"""
-        return username == "admin" and password == "admin123"
+        return username == "admin" and password == "123"
     
-    def add_product(self, nama: str, harga: float, gambar: str = None) -> Dict[str, Any]:
+    def add_product(self,id: float, nama: str, harga: float, gambar: str = None) -> Dict[str, Any]:
         """Menambah produk baru"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             
             if gambar:
-                query = "INSERT INTO products (namaproduk, harga, gambar) VALUES (%s, %s, %s)"
-                data = (nama, harga, gambar)
+                query = "INSERT INTO products (id,namaproduk, harga, gambar) VALUES (%s, %s, %s, %s)"
+                data = (id, nama, harga, gambar)
             else:
-                query = "INSERT INTO products (namaproduk, harga) VALUES (%s, %s)"
-                data = (nama, harga)
+                query = "INSERT INTO products (id, namaproduk, harga) VALUES (%s, %s, %s)"
+                data = (id, nama, harga)
             
             cursor.execute(query, data)
             conn.commit()

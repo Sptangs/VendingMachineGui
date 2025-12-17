@@ -44,8 +44,9 @@ class AdminFrontend:
         
         tk.Label(login, text="Password:", bg=self.colors['background']).pack()
         pwd = tk.Entry(login, width=25, show="*")
-        pwd.insert(0, "admin123")
+        pwd.insert(0, "123")
         pwd.pack(pady=5)
+        
         
         def check():
             if self.backend.authenticate_admin(user.get(), pwd.get()):
@@ -111,18 +112,23 @@ class AdminFrontend:
         tk.Label(self.data_frame, text="Harga:", bg='white').pack()
         price_entry = tk.Entry(self.data_frame, width=30)
         price_entry.pack()
+
+        tk.Label(self.data_frame, text="ID:", bg='white').pack()
+        id_entry = tk.Entry(self.data_frame, width=30)
+        id_entry.pack()
         
         def save():
+            id = id_entry.get()
             nama = name_entry.get()
             harga = price_entry.get()
             
-            if not nama or not harga:
+            if not nama or not harga or not id:
                 messagebox.showwarning("Input Error", "Semua field harus diisi!")
                 return
             
             try:
                 harga = float(harga)
-                result = self.backend.add_product(nama, harga)
+                result = self.backend.add_product(id,nama, harga)
                 
                 if result['success']:
                     messagebox.showinfo("Sukses", result['message'])
