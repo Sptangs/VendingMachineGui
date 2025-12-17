@@ -24,7 +24,7 @@ class AdminBackend:
     
     def authenticate_admin(self, username: str, password: str) -> bool:
         """Autentikasi admin"""
-        return username == "admin" and password == "123"
+        return username == "" and password == ""
     
     def add_product(self,id: float, nama: str, harga: float, gambar: str = None) -> Dict[str, Any]:
         """Menambah produk baru"""

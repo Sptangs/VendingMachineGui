@@ -13,7 +13,6 @@ class VendingFrontend:
         self.backend = backend
         self.COLORS = COLORS
 
-        # variabel keypad
         self.mode = ""
         self.temp = ""
 
@@ -58,11 +57,9 @@ class VendingFrontend:
         popup.geometry("420x500")  
         popup.resizable(False, False)
 
-        # frame utama
         main_frame = tk.Frame(popup, padx=20, pady=20)
         main_frame.pack(fill="both", expand=True)
 
-        # Judul
         title = tk.Label(
             main_frame,
             text="Informasi",
@@ -70,7 +67,6 @@ class VendingFrontend:
         )
         title.pack(pady=(0, 20))
 
-        # Gambar Produk
         try:
             if not gambar_path or not os.path.exists(gambar_path):
                 raise FileNotFoundError()
@@ -85,7 +81,6 @@ class VendingFrontend:
         except:
             tk.Label(main_frame, text="[Gambar Tidak Ditemukan]", font=("Arial", 12)).pack(pady=5)
 
-        # Isi Informasi
         info_text = (
             f"✔ Berhasil membeli {nama_produk}\n\n"
             f"Harga        : Rp {harga}\n"
@@ -101,7 +96,6 @@ class VendingFrontend:
         )
         info_label.pack(pady=10)
 
-        # Tombol OK
         btn_ok = tk.Button(
             main_frame,
             text="OK",
@@ -118,11 +112,10 @@ class VendingFrontend:
     # =====================================================
     def show_vending_machine(self, on_back=None):
 
-        # clear widget
         for w in self.root.winfo_children():
             w.destroy()
 
-        # FRAME UTAMA
+
         main_frame = tk.Frame(self.root, bg="white")
         main_frame.pack(fill=tk.BOTH, expand=True)
 
@@ -132,7 +125,7 @@ class VendingFrontend:
         main_frame.grid_columnconfigure(2, weight=0)
         
 
-        # TITLE
+    
         title_frame = tk.Frame(main_frame, bg="white")
         title_frame.grid(row=0, column=0, columnspan= 3)
 
@@ -147,39 +140,35 @@ class VendingFrontend:
             bg="black",
             fg="white",
             justify="center",
-            bd=5,             # tebal garis tepi
-            relief="ridge",   # jenis garis tepi
-            padx=5, pady=2, height= 3   # padding supaya teks tidak menempel ke garis
+            bd=5,            
+            relief="ridge",   
+            padx=5, pady=2, height= 3  
         )
-        running_label.pack(pady=(5, 0), fill="x")  # fill="x" biar garis tepi memanjang horizontal
+        running_label.pack(pady=(5, 0), fill="x") 
 
         def scroll_text():
             nonlocal welcome_text
-            # geser karakter pertama ke akhir
+
             welcome_text = welcome_text[1:] + welcome_text[0]
             running_label.config(text=welcome_text)
-            # update setiap 200 ms
+
             running_label.after(200, scroll_text)
 
-        scroll_text()  # mulai animasi
+        scroll_text() 
 
 
-
-        # DISPLAY PRODUK
         display = tk.Frame(main_frame, bg="#333", bd=8, relief="raise", height=75, width=100)
         display.grid(row=2, column=0,columnspan=3, sticky="nsew", padx=(10, 10), pady=10)
 
         display = tk.Frame(main_frame, bg="#333", bd=8, relief="ridge", width=100)
         display.grid(row=1, column=0,columnspan=2, sticky="nsew", padx=(10, 2), pady=10)
 
-        # AREA KANAN
         right_area = tk.Frame(main_frame, bg="grey")
         right_area.grid(row=1, column=2, sticky="nsew", padx=(2, 10), pady=10)
 
         right_area.grid_rowconfigure(1, weight=1)
         right_area.grid_columnconfigure(0, weight=1)
 
-        # CONTROL PANEL
         control_frame = tk.Frame(right_area, bg="#ddd",)
         control_frame.grid(row=0, column=0, sticky="nsew", pady=5,padx=5)
 
@@ -196,7 +185,6 @@ class VendingFrontend:
         id_entry = tk.Entry(control_frame, width=20)
         id_entry.grid(row=2, column=1)
 
-        # MODE INPUT
         def set_koin():
             self.mode = "koin"
             self.temp = ""
@@ -270,9 +258,6 @@ class VendingFrontend:
         for i in range(3):
             keypad_frame.grid_rowconfigure(i, weight=1)
 
-        # =====================================================
-        # BELI PRODUK 
-        # =====================================================
         def beli():
             try:
                 coin = int(coin_entry.get())
@@ -283,14 +268,11 @@ class VendingFrontend:
             result = self.backend.process_purchase(pid, coin)
 
             if not result.get("success"):
-                # tampilkan pesan error singkat
                 self.show_popup(f"\n❌ {result.get('message')}\n")
             else:
-                # ambil gambar produk via backend (jika tersedia)
                 prod_info = self.backend.get_product_by_id(pid)
                 gambar_path = prod_info.get("gambar") if prod_info.get("success") else None
 
-                # tampilkan popup informasi yang lebih besar
                 self.show_info_popup(
                     result.get("nama_produk", "Produk"),
                     result.get("harga", 0),
@@ -314,10 +296,6 @@ class VendingFrontend:
                 command=self.go_to_admin
             ).grid(row=3, column=0, padx=5)
 
-
-        # =====================================================
-        # TAMPILKAN PRODUK
-        # =====================================================
         def tampilkan_produk():
             data = self.backend.get_all_products()
 
@@ -349,7 +327,10 @@ class VendingFrontend:
 
                 try:
                     img = Image.open(gambar)
-                    img = img.resize((50, 50))
+   
+                    max_width, max_height = 75, 50
+                    img.thumbnail((max_width, max_height))
+                    
                     img_tk = ImageTk.PhotoImage(img)
                 except:
                     img_tk = None
@@ -364,9 +345,10 @@ class VendingFrontend:
                     tk.Label(card, text="[No Img]", bg="#3a3a3a", fg="white").pack()
 
                 tk.Label(card, text=nama, fg="white", bg="#3a3a3a",
-                         font=("Arial", 8)).pack()
+                        font=("Arial", 8)).pack()
                 tk.Label(card, text=f"Rp {harga}", fg="#ffdd33", bg="#3a3a3a",
-                         font=("Arial", 8, "bold")).pack()
+                        font=("Arial", 8, "bold")).pack()
+
 
                 col += 1
                 if col == total_kolom:

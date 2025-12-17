@@ -80,14 +80,12 @@ class VendingBackend:
     def process_purchase(self, product_id: int, coin: int) -> Dict[str, Any]:
         """Memproses transaksi pembelian"""
         try:
-            # Validasi coin minimum
             if coin < 1000:
                 return {
                     'success': False,
                     'message': 'Koin minimum adalah 1000'
                 }
             
-            # Ambil data produk
             product_result = self.get_product_by_id(product_id)
             
             if not product_result['success']:
@@ -96,18 +94,14 @@ class VendingBackend:
             nama = product_result['nama']
             harga = product_result['harga']
             
-            # Cek apakah uang cukup
             if coin < harga:
                 return {
                     'success': False,
                     'message': f'Uang kurang Rp {harga - coin}',
                     'kurang': harga - coin
                 }
-            
-            # Hitung kembalian
+
             kembalian = coin - harga
-            
-            # Transaksi berhasil
             return {
                 'success': True,
                 'message': f'Berhasil membeli {nama}',

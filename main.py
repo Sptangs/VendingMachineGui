@@ -2,7 +2,7 @@ import tkinter as tk
 from backend_vending import VendingBackend
 from frontend_vending import VendingFrontend
 
-# Konfigurasi warna UI
+
 COLORS = {
     'primary': '#2c3e50',
     'secondary': '#3498db',
@@ -18,7 +18,6 @@ class VendingMachineApp:
     """Aplikasi utama Vending Machine - langsung masuk ke mode belanja"""
 
     def __init__(self):
-        # Setup window
         self.root = tk.Tk()
         self.root.title("Aplikasi Vending Machine")
         self.root.geometry("900x600")

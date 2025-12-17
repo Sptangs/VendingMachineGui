@@ -39,12 +39,12 @@ class AdminFrontend:
         
         tk.Label(login, text="Username:", bg=self.colors['background']).pack()
         user = tk.Entry(login, width=25)
-        user.insert(0, "admin")
+        user.insert(0, "")
         user.pack(pady=5)
         
         tk.Label(login, text="Password:", bg=self.colors['background']).pack()
         pwd = tk.Entry(login, width=25, show="*")
-        pwd.insert(0, "123")
+        pwd.insert(0, "")
         pwd.pack(pady=5)
         
         
@@ -103,7 +103,7 @@ class AdminFrontend:
         self.data_frame.pack(fill=tk.BOTH, expand=True, padx=20, pady=20)
         
         tk.Label(self.data_frame, text="Tambah Produk", bg='white',
-                 font=("Arial", 14, "bold")).pack(pady=10)
+                font=("Arial", 14, "bold")).pack(pady=10)
         
         tk.Label(self.data_frame, text="Nama:", bg='white').pack()
         name_entry = tk.Entry(self.data_frame, width=30)
@@ -117,18 +117,24 @@ class AdminFrontend:
         id_entry = tk.Entry(self.data_frame, width=30)
         id_entry.pack()
         
+        # ===== Tambahan field Gambar =====
+        tk.Label(self.data_frame, text="Gambar (path/url):", bg='white').pack()
+        image_entry = tk.Entry(self.data_frame, width=30)
+        image_entry.pack()
+        
         def save():
             id = id_entry.get()
             nama = name_entry.get()
             harga = price_entry.get()
-            
-            if not nama or not harga or not id:
+            gambar = image_entry.get()  # ambil input gambar
+        
+            if not nama or not harga or not id or not gambar:
                 messagebox.showwarning("Input Error", "Semua field harus diisi!")
                 return
             
             try:
                 harga = float(harga)
-                result = self.backend.add_product(id,nama, harga)
+                result = self.backend.add_product(id, nama, harga, gambar)  # kirim gambar juga
                 
                 if result['success']:
                     messagebox.showinfo("Sukses", result['message'])
@@ -139,7 +145,8 @@ class AdminFrontend:
                 messagebox.showerror("Error", "Harga harus berupa angka!")
         
         tk.Button(self.data_frame, text="Simpan", bg=self.colors['success'],
-                  fg='white', width=15, command=save).pack(pady=10)
+                fg='white', width=15, command=save).pack(pady=10)
+
     
     def view_products(self):
         """Tampilkan daftar produk"""
